@@ -6,14 +6,22 @@ import java.util.UUID;
 import java.util.Optional;
 import java.util.List;
 import com.abdelali.ebankservice.repository.BankAccountRepository;
+
+import com.abdelali.ebankservice.model.Customer;
+
 import org.springframework.stereotype.Service;
+import com.abdelali.ebankservice.clients.CustomerRestClient;
+import com.abdelali.ebankservice.model.Customer;
+
 
 @Service
 public class EBankService {
     private final BankAccountRepository bankAccountRepository;
+    private final CustomerRestClient customerRestClient;
 
-    public EBankService(BankAccountRepository bankAccountRepository) {
+    public EBankService(BankAccountRepository bankAccountRepository, CustomerRestClient customerRestClient) {
         this.bankAccountRepository = bankAccountRepository;
+        this.customerRestClient = customerRestClient;
     }
 
     public List<BankAccount> getAllAccounts() {
@@ -21,7 +29,15 @@ public class EBankService {
     }
 
     public Optional<BankAccount> getAccountById(String id) {
-        return bankAccountRepository.findById(id);
+        return bankAccountRepository.findById(id)
+                .map(account -> {
+                    Customer customer = customerRestClient
+                            .getCustomerById(account.getCustomerId());
+
+                    account.setCustomer(customer);
+
+                    return account;
+                });
     }
 
     public List<BankAccount> getAccountsByCustomerId(Long customerId) {
