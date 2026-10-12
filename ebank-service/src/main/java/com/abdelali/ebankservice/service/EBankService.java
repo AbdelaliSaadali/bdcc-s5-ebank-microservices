@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.UUID;
 import java.util.Optional;
 import java.util.List;
-import com.abdelali.ebankservice.entities.AccountType;
 import com.abdelali.ebankservice.repository.BankAccountRepository;
 import org.springframework.stereotype.Service;
 
