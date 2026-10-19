@@ -5,13 +5,14 @@ import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.stereotype.Service;
+import org.springframework.ai.mcp.SyncMcpToolCallbackProvider;
 
 @Service
 public class EbankAiAgent {
 
     private final ChatClient chatClient;
 
-    public EbankAiAgent(ChatClient.Builder builder) {
+    public EbankAiAgent(ChatClient.Builder builder, SyncMcpToolCallbackProvider mcpTools) {
 
         ChatMemory memory = MessageWindowChatMemory.builder()
                 .maxMessages(20)
@@ -34,6 +35,7 @@ public class EbankAiAgent {
                 .defaultAdvisors(
                     MessageChatMemoryAdvisor.builder(memory).build()
                 )
+                .defaultToolCallbacks(mcpTools)
                 .build();
     }
 
